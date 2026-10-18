@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "types": ["chrome"],
+    "rootDir": "extension",
+    "outDir": "dist/extension",
+    "noEmit": false,
+    "noEmitOnError": true,
+    "allowImportingTsExtensions": false,
+    "newLine": "lf"
+  },
+  "include": ["extension/**/*.ts"]
+}

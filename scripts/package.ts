@@ -3,10 +3,10 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
-import "./check.mjs";
+import "./check.ts";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const source = path.join(root, "extension");
+const source = path.join(root, "dist", "extension");
 const license = path.join(root, "LICENSE");
 const manifest = JSON.parse(await readFile(path.join(source, "manifest.json"), "utf8"));
 const dist = path.join(root, "dist");
@@ -14,11 +14,12 @@ await mkdir(dist, { recursive: true });
 const archive = path.join(dist, `afloat-${manifest.version}.zip`);
 if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) throw new Error("Invalid extension version");
 const temporary = `${archive}.tmp`;
-const entries = [
-  ...((await readdir(source)).map((name) => [path.join(source, name), name])),
+const entries: [string, string][] = [
+  ...((await readdir(source)).map((name): [string, string] => [path.join(source, name), name])),
   [license, "LICENSE"],
-].sort((a, b) => a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0);
-const quote = (value) => `'${value.replaceAll("'", "''")}'`;
+];
+entries.sort((a, b) => a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0);
+const quote = (value: string) => `'${value.replaceAll("'", "''")}'`;
 await rm(temporary, { force: true });
 try {
   execFileSync("powershell.exe", ["-NoProfile", "-Command",
@@ -35,7 +36,7 @@ ${entries.map(([file, name]) => `  $afloatBytes = [System.IO.File]::ReadAllBytes
   ], { stdio: "inherit", windowsHide: true });
   let previous;
   try { previous = await readFile(archive); } catch (error) {
-    if (error.code !== "ENOENT") throw error;
+    if (!(error instanceof Error) || !("code" in error) || error.code !== "ENOENT") throw error;
   }
   if (!previous?.equals(await readFile(temporary))) {
     execFileSync("powershell.exe", ["-NoProfile", "-Command",

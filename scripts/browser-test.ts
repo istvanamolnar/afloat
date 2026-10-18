@@ -4,8 +4,16 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
+import type * as Playwright from "playwright";
 
-const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE_PATH || "playwright");
+// These globals belong to the test page, not the Node.js process.
+declare global {
+  var video: HTMLVideoElement;
+  var originalVideo: HTMLVideoElement;
+  var attackerCalls: number;
+}
+
+const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE_PATH || "playwright") as typeof Playwright;
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const browserName = process.argv[2] || "chrome";
 assert(["chrome", "edge"].includes(browserName), "Use chrome or edge");
@@ -28,8 +36,10 @@ try {
       function draw() { ctx.fillStyle = '#244b3e'; ctx.fillRect(0, 0, 640, 360); ctx.fillStyle = '#d9f7ce'; ctx.font = '28px sans-serif'; ctx.fillText('Afloat playback test ' + Math.round(performance.now()), 30, 180); requestAnimationFrame(draw); }
       draw(); video.srcObject = canvas.captureStream(30); window.originalVideo = video;
     </script>` }));
-  const cdp = await context.browser().newBrowserCDPSession();
-  const { id } = await cdp.send("Extensions.loadUnpacked", { path: path.join(root, "extension") });
+  const browser = context.browser();
+  assert(browser);
+  const cdp = await browser.newBrowserCDPSession();
+  const { id } = await cdp.send("Extensions.loadUnpacked", { path: path.join(root, "dist", "extension") });
   const worker = context.serviceWorkers().find((item) => item.url().includes(id)) || await context.waitForEvent("serviceworker");
   await worker.evaluate(async () => {
     for (let attempt = 0; attempt < 50; attempt++) {
@@ -38,7 +48,7 @@ try {
     }
     throw new Error("Extension did not initialize");
   });
-  const page = context.pages()[0];
+  const page = context.pages()[0] ?? await context.newPage();
   await page.goto("https://afloat.test/");
   await page.waitForFunction(() => video.readyState >= 2 && !video.paused);
   async function clickAction() {
@@ -48,8 +58,9 @@ try {
     assert(target);
     await cdp.send("Extensions.triggerAction", { id, targetId: target.targetId });
   }
-  const tabId = await worker.evaluate(async () => (await chrome.tabs.query({ active: true, currentWindow: true }))[0].id);
-  async function waitBadge(expected) {
+  const tabId = await worker.evaluate(async () => (await chrome.tabs.query({ active: true, currentWindow: true }))[0]?.id);
+  assert(typeof tabId === "number");
+  async function waitBadge(expected: string) {
     await worker.evaluate(async ({ tabId, expected }) => {
       for (let attempt = 0; attempt < 50; attempt++) {
         if (await chrome.action.getBadgeText({ tabId }) === expected) return;
@@ -62,8 +73,8 @@ try {
   try {
     await page.waitForFunction(() => document.pictureInPictureElement === originalVideo, null, { timeout: 5000 });
   } catch (error) {
-    console.log("Toolbar:", await worker.evaluate(async () => { const [tab] = await chrome.tabs.query({ active: true, currentWindow: true }); return { badge: await chrome.action.getBadgeText({ tabId: tab.id }), title: await chrome.action.getTitle({ tabId: tab.id }) }; }));
-    console.log("Direct API:", await page.evaluate(async () => { try { await video.requestPictureInPicture(); return "ok"; } catch (error) { return error.toString(); } }));
+    console.log("Toolbar:", await worker.evaluate(async (tabId) => ({ badge: await chrome.action.getBadgeText({ tabId }), title: await chrome.action.getTitle({ tabId }) }), tabId));
+    console.log("Direct API:", await page.evaluate(async () => { try { await video.requestPictureInPicture(); return "ok"; } catch (error) { return String(error); } }));
     throw error;
   }
   await waitBadge("ON");

@@ -1,5 +1,5 @@
 // This self-contained function runs only in the tab the user invokes Afloat on.
-export async function toggleVideo() {
+export async function toggleVideo(): Promise<{ active: boolean; error?: string }> {
   if (document.pictureInPictureElement) {
     await document.exitPictureInPicture();
     return { active: false };
@@ -16,7 +16,7 @@ export async function toggleVideo() {
   const video = videos[0];
   if (!video) return { active: false, error: "Afloat — Start a YouTube video, then click again." };
 
-  const onLeave = (event) => {
+  const onLeave = (event: Event) => {
     if (!event.isTrusted) return;
     video.removeEventListener("leavepictureinpicture", onLeave);
     try { void chrome.runtime.sendMessage({ type: "AFLOAT_CLOSED" }).catch(() => {}); } catch { /* Extension was reloaded. */ }
@@ -29,7 +29,7 @@ export async function toggleVideo() {
     return { active: true };
   } catch (error) {
     video.removeEventListener("leavepictureinpicture", onLeave);
-    return { active: false, error: error.name === "NotAllowedError"
+    return { active: false, error: error instanceof DOMException && error.name === "NotAllowedError"
       ? "Afloat — Click play on the video, then click Afloat again."
       : "Afloat — This video cannot open in Picture-in-Picture." };
   }

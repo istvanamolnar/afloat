@@ -1,3 +1,4 @@
-/extension/*.js text eol=lf
+/extension/*.ts text eol=lf
+/scripts/*.ts text eol=lf
 /extension/manifest.json text eol=lf
 /LICENSE text eol=lf

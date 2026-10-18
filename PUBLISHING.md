@@ -6,7 +6,7 @@ The security fix, policy, listing text, permission explanations, icon, and promo
 
 ## GitHub download — current distribution
 
-Chrome Web Store publication is deferred for now. The [README](README.md#install-in-chrome-or-microsoft-edge) links to GitHub's source ZIP and explains extraction and **Developer mode → Load unpacked** using the repository's `extension` folder. This requires no account, store payment, or build tools, and updates are manual.
+Chrome Web Store publication is deferred for now. The [README](README.md#install-in-chrome-or-microsoft-edge) explains extraction and **Developer mode → Load unpacked** using the extension ZIP from a successful workflow run. Source ZIP installations require a TypeScript build and use the generated `dist/extension` folder. Updates are manual.
 
 The [Build and package workflow](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) automatically validates the source, runs the Chrome and Edge regressions, and uploads the ZIP and checksum as an artifact on successful pushes to `main` and pull requests. Open a successful run and download **Artifacts → afloat-package**. Extract the artifact to get `afloat-1.0.1.zip` and its checksum, then extract the extension ZIP for manual installation or upload that inner ZIP to a store. [GitHub requires sign-in for artifact downloads](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts). Artifacts are retained for 90 days; run the workflow again if a fresh artifact is needed after expiry.
 
@@ -51,14 +51,15 @@ Account verification details and contact emails are entered in the dashboards; n
 Push source changes to `main` to run the full automated pipeline. For a local validation and package build:
 
 ```powershell
-npm run build
+pnpm install --frozen-lockfile
+pnpm run build
 ```
 
-The build command runs validation before packaging; CI also requires `npm test` and `npm run test:edge` to pass before uploading the artifact. The workflow installs its browser-test tooling automatically. Local browser tests require Playwright; see README for setup and executable overrides. Their temporary-profile flags are development tools, not part of the extension or instructions for users.
+Use Node.js 24 or newer and the pnpm version pinned in `package.json`. The build command type-checks, compiles, and validates before packaging; CI also requires `pnpm test` and `pnpm run test:edge` to pass before uploading the artifact. Playwright is included in the locked development dependencies. Installations enforce a two-day minimum release age and disable lifecycle scripts. See README for browser executable overrides. Temporary-profile flags are development tools, not part of the extension or instructions for users.
 
 ZIP entries use a fixed order and timestamp for repeatable output. The packager writes a temporary archive and replaces the previous ZIP only after successful creation. The workflow has read-only repository access; it uploads artifacts without changing any Git branch.
 
-The packaging script includes the contents of `extension/` and the repository's `LICENSE` in the ZIP. Do not upload the repository, `.git`, test profiles, or store materials as the extension package.
+The packaging script includes the compiled contents of `dist/extension/` and the repository's `LICENSE` in the ZIP. TypeScript sources and development dependencies are excluded. Do not upload the repository, `.git`, test profiles, or store materials as the extension package.
 
 Also manually test a real public YouTube video, ads, a paused video, and Shorts in both browsers, plus your actual other application in normal/borderless-fullscreen modes. Automated tests use original generated media. Protected/embedded players and exclusive-fullscreen applications can impose additional restrictions.
 

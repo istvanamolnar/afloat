@@ -1,6 +1,6 @@
 import { toggleVideo } from "./video.js";
 
-async function showState(tabId, active, error) {
+async function showState(tabId: number, active: boolean, error?: string) {
   await Promise.allSettled([
     chrome.action.setBadgeText({ tabId, text: error ? "!" : active ? "ON" : "" }),
     chrome.action.setBadgeBackgroundColor({ tabId, color: error ? "#a64b2a" : "#244b3e" }),
@@ -19,8 +19,9 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 });
 
-chrome.runtime.onMessage.addListener((message, sender) => {
-  if (sender.id === chrome.runtime.id && sender.tab?.id && sender.frameId === 0 && message?.type === "AFLOAT_CLOSED") {
+chrome.runtime.onMessage.addListener((message: unknown, sender) => {
+  if (sender.id === chrome.runtime.id && sender.tab?.id && sender.frameId === 0 &&
+      typeof message === "object" && message !== null && "type" in message && message.type === "AFLOAT_CLOSED") {
     void showState(sender.tab.id, false);
   }
 });

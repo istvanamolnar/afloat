@@ -3,6 +3,7 @@
   "version": "1.0.1",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@12.14.0",
   "description": "Lightweight Chromium extension that keeps your current video in an always-on-top Picture-in-Picture window.",
   "license": "MIT",
   "repository": {
@@ -10,11 +11,19 @@
     "url": "git+https://github.com/istvanamolnar/afloat.git"
   },
   "scripts": {
-    "test": "node scripts/browser-test.mjs",
-    "test:edge": "node scripts/browser-test.mjs edge",
-    "check": "node scripts/check.mjs",
-    "build": "node scripts/package.mjs",
-    "package": "node scripts/package.mjs"
+    "typecheck": "tsc --noEmit",
+    "compile": "node scripts/compile.ts",
+    "test": "pnpm run compile && node scripts/browser-test.ts",
+    "test:edge": "pnpm run compile && node scripts/browser-test.ts edge",
+    "check": "pnpm run typecheck && pnpm run compile && node scripts/check.ts",
+    "build": "pnpm run check && node scripts/package.ts",
+    "package": "pnpm run build"
   },
-  "engines": { "node": ">=20" }
+  "engines": { "node": ">=24", "pnpm": ">=12.14.0 <13" },
+  "devDependencies": {
+    "@types/chrome": "0.3.5",
+    "@types/node": "24.19.2",
+    "playwright": "1.62.1",
+    "typescript": "7.0.2"
+  }
 }

@@ -16,7 +16,7 @@ No store account, payment, build step, or Node.js installation is needed. [GitHu
 
 Keep the extracted folder in place. Updates are manual: replace its files with a newer release, then click **Reload** on Afloat's card in the browser's extensions page. The ZIP is for extraction and loading in Developer mode, not a one-click store installer.
 
-Alternatively, [download the source ZIP](https://github.com/istvanamolnar/afloat/archive/refs/heads/main.zip) without signing in, or clone the repository. Extract it and select its `extension` folder directly with **Load unpacked**.
+Alternatively, [download the source ZIP](https://github.com/istvanamolnar/afloat/archive/refs/heads/main.zip) without signing in, or clone the repository. Source installations require the development build below; select the generated `dist/extension` folder with **Load unpacked**.
 
 ## Use
 
@@ -46,19 +46,25 @@ The source code and documentation are licensed under the [MIT license](LICENSE).
 
 ## Development
 
-There is no compilation step or runtime dependency. `extension/` is ready to load. To validate and generate the ZIP and checksum locally, run:
+Use Node.js 24 or newer and the pnpm version pinned in `package.json`. The extension and development scripts are written in TypeScript. The browser extension compiles to JavaScript in `dist/extension`; Node.js runs the development scripts using its built-in TypeScript support. There are no extension runtime dependencies.
+
+Install development dependencies, then validate, compile, and generate the ZIP and checksum (Windows):
 
 ```sh
-npm run build
+pnpm install --frozen-lockfile
+pnpm run build
 ```
 
 [GitHub Actions](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) does this automatically for pushes to `main` and pull requests. It validates the source, runs the Chrome and Edge browser regression tests, and uploads the ZIP and checksum as a workflow artifact only after success. The workflow has read-only repository access and never commits generated files. No manual zipping is needed.
 
-- `node scripts/check.mjs` checks the manifest, assets, and syntax.
-- `node scripts/browser-test.mjs` tests real Picture-in-Picture playback and security regressions in a separate Chrome profile.
-- `node scripts/browser-test.mjs edge` runs the same checks in a separate Microsoft Edge profile.
-- Browser tests need Playwright available locally (for example `npm install --no-save playwright@1.62.1`), or `PLAYWRIGHT_MODULE_PATH` set to an existing package directory. Set `BROWSER_EXECUTABLE` if installed elsewhere. The existing `CHROME_EXECUTABLE` override is also supported.
-- `npm run build` (or `node scripts/package.mjs`) validates and creates `dist/afloat-1.0.1.zip` and its SHA-256 checksum for GitHub downloads or either store (Windows). Packaged text files use LF line endings, and ZIP entry order and timestamps are fixed, so local and CI builds produce the same archive from unchanged inputs. Packaging failures preserve the previous ZIP.
+- `pnpm run typecheck` checks all TypeScript sources with strict compiler settings.
+- `pnpm run check` type-checks, compiles, and validates the manifest, assets, and emitted JavaScript.
+- `pnpm test` compiles the extension and tests real Picture-in-Picture playback and security regressions in a separate Chrome profile.
+- `pnpm run test:edge` runs the same checks in a separate Microsoft Edge profile.
+- Playwright is a locked development dependency installed by `pnpm install`. An existing package directory can also be selected with `PLAYWRIGHT_MODULE_PATH`. Set `BROWSER_EXECUTABLE` if the browser is installed elsewhere. The existing `CHROME_EXECUTABLE` override is also supported.
+- `pnpm run build` validates and creates `dist/afloat-1.0.1.zip` and its SHA-256 checksum for GitHub downloads or either store. Packaged text files use LF line endings, and ZIP entry order and timestamps are fixed, so local and CI builds produce the same archive from unchanged inputs. Packaging failures preserve the previous ZIP.
+
+`pnpm-workspace.yaml` sets `minimumReleaseAge: 2880` (two days), rejects packages with missing publication times, and sets `ignoreScripts: true`. Dependency installation never runs lifecycle scripts. Build and test commands are run explicitly. `pnpm-lock.yaml` pins dependency versions and integrity hashes, and CI installs with `--frozen-lockfile --ignore-scripts`.
 
 `dist/` is generated build output and is ignored by Git. A local build recreates it; CI creates it only on its runner. When releasing a new version, update both version fields and push the source. The workflow generates the new versioned package automatically.
 
