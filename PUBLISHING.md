@@ -2,7 +2,15 @@
 
 Release **1.0.1** uses the **same ZIP for both stores**: `dist/afloat-1.0.1.zip`.
 
-The security fix, policy, listing text, permission explanations, icon, and promotional tile are prepared. The public repository hosts the privacy policy. A genuine screenshot and publisher account/submission actions remain manual. Google and Microsoft determine store approval.
+The security fix, policy, listing text, permission explanations, icon, and promotional tile are prepared. The public repository hosts the privacy policy. A genuine screenshot with privacy redactions is prepared locally. Publisher review and account/submission actions remain manual. Google and Microsoft determine store approval.
+
+## GitHub download — current distribution
+
+Chrome Web Store publication is deferred for now. The repository includes `dist/afloat-1.0.1.zip` and `dist/afloat-1.0.1.zip.sha256`. The [README](README.md#install-in-chrome-or-microsoft-edge) links to the ZIP and explains extraction and **Developer mode → Load unpacked** in either browser. Users do not need a store account or build tools, and updates are manual.
+
+Only the verified 1.0.1 ZIP and checksum are allowed through `.gitignore`; older build output remains ignored. For future versions, regenerate and verify the package, update the download links and ignore entries, and commit both artifacts together. Store images and test profiles do not belong in the ZIP.
+
+Microsoft's [Edge developer registration documentation](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/create-dev-account) confirms that the Edge extension program has **no registration fee**. Account verification and certification still apply if you choose to publish there.
 
 ## 1. Publish the repository and privacy policy
 
@@ -17,6 +25,24 @@ A public GitHub file provides an accessible HTTPS policy page; the cited store p
 Review `PRIVACY.md` and confirm the publisher name and EaseMe contact route. The policy explains local video metadata processing and no storage or off-device transmission. Update the policy and dashboard disclosures together if behavior changes.
 
 The source code and documentation use the repository's MIT license. The EaseMe name, logo, and branded promotional artwork are excluded; see the README's license section. Keep credentials, signing keys, and private information out of the repository.
+
+## Publisher and contact review
+
+These are the values prepared in the project; they do not configure your developer accounts automatically.
+
+| Detail | Prepared value | Where to review |
+| --- | --- | --- |
+| Publisher shown in the policy and description | EaseMe Solutions | [PRIVACY.md](PRIVACY.md) and [store/listing.md](store/listing.md) |
+| Public support and privacy contact | `https://www.easeme.eu/en/contact` | [PRIVACY.md](PRIVACY.md), [SECURITY.md](SECURITY.md), [README.md](README.md), and [store/listing.md](store/listing.md) |
+| Privacy policy URL | `https://github.com/istvanamolnar/afloat/blob/main/PRIVACY.md` | Both store dashboards' privacy fields |
+| Optional extension website | `https://github.com/istvanamolnar/afloat` | Both store listings |
+| Copyright holder | `2026 istvanamolnar` | [LICENSE](LICENSE); confirm that this identifies the actual rights holder |
+
+**Chrome:** Open the [Developer Dashboard](https://chrome.google.com/webstore/devconsole) and select **Account**. Review publisher name, verified contact email, and the identity/trader information requested for your account. Chrome's account documentation says the verified contact email is displayed with the extension's contact information. Use an address you monitor and intend to make public. Open the Afloat item and review **Store listing** (description, images, homepage, support URL), **Privacy practices** (policy URL and disclosures), and the listing preview before submitting.
+
+**Edge:** Open [Partner Center](https://partner.microsoft.com/dashboard/microsoftedge/overview), then **Settings (gear) → Developer settings → Contact info** to review publisher and contact details. In the account settings, **Legal info** shows business/verification information. For Afloat, review **Properties** (website and support contact), **Privacy**, and **Store listings**. The publisher name, website, and support contact appear publicly in Edge Add-ons.
+
+Account verification details and contact emails are entered in the dashboards; no publisher email, legal address, or trader declaration is configured by this repository. Review what the dashboards identify as public before submitting. Public Git commits also contain author identity metadata; [GitHub email settings](https://github.com/settings/emails) let you choose a no-reply address for future commits if desired.
 
 ## 2. Check and package
 
@@ -41,7 +67,7 @@ Also manually test a real public YouTube video, ads, a paused video, and Shorts 
 - Support URL: `https://www.easeme.eu/en/contact`, or another support route you actually maintain. Enter the required publisher/contact email yourself.
 - Optional website URL: `https://github.com/istvanamolnar/afloat`.
 - Icon: `extension/icon.png`. Small promo: `store/assets/promo-440x280.png`.
-- Genuine screenshot: capture as described in `store/README.md`. This remains manual after the native capture safety stop.
+- Genuine screenshot: `store/assets/screenshot-1280x800.png`, prepared locally from the user's capture with privacy redactions and kept local pending publisher review. Review it before public distribution; provenance is in the local `store/README.md`.
 
 Confirm rights to the EaseMe logo and any public screenshot footage. Do not imply endorsement by YouTube, Google, or Microsoft.
 
@@ -73,16 +99,22 @@ This source has no `update_url` or hard-coded store extension ID. No application
 - [x] Privacy policy, descriptions, disclosures, and reviewer instructions.
 - [x] Small promotional tile.
 - [x] Public repository and verified live privacy URL.
-- [ ] Genuine store screenshot.
+- [x] ZIP and checksum prepared for direct GitHub downloads with manual install instructions.
+- [x] Genuine store screenshot, cropped and privacy-redacted locally.
 - [ ] Publisher review of identity, contact details, rights, policy, and certifications.
 - [ ] Publisher accounts, verification, upload, and final submission.
 
 ## Official references checked 18 October 2026
 
 - [Chrome publication](https://developer.chrome.com/docs/webstore/publish)
+- [Chrome publisher account fields](https://developer.chrome.com/docs/webstore/set-up-account)
+- [Chrome listing fields](https://developer.chrome.com/docs/webstore/cws-dashboard-listing)
 - [Chrome privacy fields](https://developer.chrome.com/docs/webstore/cws-dashboard-privacy)
 - [Chrome local-data FAQ](https://developer.chrome.com/docs/webstore/program-policies/user-data-faq)
 - [Chrome images](https://developer.chrome.com/docs/webstore/images)
 - [Chrome two-step verification](https://developer.chrome.com/docs/webstore/program-policies/policies#2-step-verification)
 - [Edge publication](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/publish-extension)
+- [Edge registration and fee](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/create-dev-account)
+- [Edge account and contact settings](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/manage-settings)
+- [Edge business verification](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/verify-microsoft-edge-program)
 - [GitHub Pages setup](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site)

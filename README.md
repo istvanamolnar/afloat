@@ -6,9 +6,16 @@ Uses the EaseMe Solutions hex logo from [easeme.eu](https://www.easeme.eu/) as a
 
 ## Install in Chrome or Microsoft Edge
 
-1. Open `chrome://extensions` in Chrome or `edge://extensions` in Microsoft Edge and enable **Developer mode**.
-2. Click **Load unpacked** and select this project's `extension` folder.
-3. Pin **Afloat** to your toolbar using the browser's Extensions menu.
+1. [Download Afloat 1.0.1 ZIP](https://github.com/istvanamolnar/afloat/raw/refs/heads/main/dist/afloat-1.0.1.zip) and extract it to a folder you will keep, such as `Documents\Afloat`.
+2. Open `chrome://extensions` in Chrome or `edge://extensions` in Microsoft Edge and enable **Developer mode**.
+3. Click **Load unpacked** and select the extracted folder containing `manifest.json`.
+4. Pin **Afloat** to your toolbar using the browser's Extensions menu.
+
+No store account, payment, build step, or Node.js installation is needed to use this download. The checked-in ZIP contains the extension files and license. Its [SHA-256 checksum](dist/afloat-1.0.1.zip.sha256) is included alongside it.
+
+Keep the extracted folder in place. Updates are manual: replace its files with a newer release, then click **Reload** on Afloat's card in the browser's extensions page. The ZIP is for extraction and loading in Developer mode, not a one-click store installer.
+
+If you cloned the source repository, you can select its `extension` folder directly instead of downloading the ZIP.
 
 ## Use
 
@@ -28,6 +35,8 @@ When you invoke Afloat, it locally inspects video elements and their playback st
 
 See [PUBLISHING.md](PUBLISHING.md) for both stores' submission steps, policy hosting, and remaining manual tasks. Copy-ready descriptions and disclosures are in [store/](store/). Both stores use the same ZIP and single application icon.
 
+Chrome Web Store publication is deferred for now. [Microsoft Edge Add-ons has no registration fee](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/create-dev-account), but still requires a developer account, verification, and extension review. The GitHub download above works in either browser without store publication.
+
 For support or security reports, contact [EaseMe Solutions](https://www.easeme.eu/en/contact). See [SECURITY.md](SECURITY.md).
 
 ## License
@@ -42,6 +51,6 @@ No build step or runtime dependencies. `extension/` is ready to load.
 - `node scripts/browser-test.mjs` tests real Picture-in-Picture playback and security regressions in a separate Chrome profile.
 - `node scripts/browser-test.mjs edge` runs the same checks in a separate Microsoft Edge profile.
 - Browser tests need Playwright available locally (for example `npm install --no-save playwright@1.62.1`), or `PLAYWRIGHT_MODULE_PATH` set to an existing package directory. Set `BROWSER_EXECUTABLE` if installed elsewhere. The existing `CHROME_EXECUTABLE` override is also supported.
-- `node scripts/package.mjs` creates `dist/afloat-1.0.1.zip` for either store (Windows).
+- `node scripts/package.mjs` creates `dist/afloat-1.0.1.zip` and its SHA-256 checksum for GitHub downloads or either store (Windows). When releasing a new version, update the download links and `.gitignore` entries, verify the package, and commit the ZIP and checksum together.
 
 The browser test uses a locally generated video; no YouTube account or network access is required.
