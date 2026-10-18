@@ -6,18 +6,17 @@ Uses the EaseMe Solutions hex logo from [easeme.eu](https://www.easeme.eu/) as a
 
 ## Install in Chrome or Microsoft Edge
 
-1. [Download the source ZIP](https://github.com/istvanamolnar/afloat/archive/refs/heads/main.zip) and extract it to a folder you will keep, such as `Documents\Afloat`.
-2. Open `chrome://extensions` in Chrome or `edge://extensions` in Microsoft Edge and enable **Developer mode**.
-3. Click **Load unpacked** and select the `extension` folder inside the extracted repository (the folder containing `manifest.json`).
-4. Pin **Afloat** to your toolbar using the browser's Extensions menu.
+1. **[Download the ZIP artifact](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml)**: open the latest successful run for `main`, then click **Artifacts → afloat-package**. Sign in to GitHub to download it.
+2. Extract the downloaded artifact ZIP, then extract the enclosed extension ZIP to a folder you will keep, such as `Documents\Afloat`. The artifact also includes the extension ZIP's SHA-256 checksum.
+3. Open `chrome://extensions` in Chrome or `edge://extensions` in Microsoft Edge and enable **Developer mode**.
+4. Click **Load unpacked** and select the extracted extension folder containing `manifest.json`.
+5. Pin **Afloat** to your toolbar using the browser's Extensions menu.
 
-No account, payment, build step, or Node.js installation is needed to use this source download. The browser loads `extension/` directly.
+No store account, payment, build step, or Node.js installation is needed. [GitHub requires sign-in to download workflow artifacts](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts). Build artifacts are retained for 90 days; use the latest successful run with an available artifact.
 
 Keep the extracted folder in place. Updates are manual: replace its files with a newer release, then click **Reload** on Afloat's card in the browser's extensions page. The ZIP is for extraction and loading in Developer mode, not a one-click store installer.
 
-If you cloned the source repository, select its `extension` folder directly instead of downloading the ZIP.
-
-For a ready-made extension ZIP and SHA-256 checksum, open a successful run under [Build and package](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) and download **Artifacts → afloat-package**. [GitHub requires sign-in to download workflow artifacts](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts). Extract the artifact, then extract the enclosed extension ZIP and load its folder containing `manifest.json`. Build artifacts are retained for 90 days; the source download above remains available without signing in.
+Alternatively, [download the source ZIP](https://github.com/istvanamolnar/afloat/archive/refs/heads/main.zip) without signing in, or clone the repository. Extract it and select its `extension` folder directly with **Load unpacked**.
 
 ## Use
 
