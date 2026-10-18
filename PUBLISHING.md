@@ -6,11 +6,11 @@ The security fix, policy, listing text, permission explanations, icon, and promo
 
 ## GitHub download — current distribution
 
-Chrome Web Store publication is deferred for now. The repository includes `dist/afloat-1.0.1.zip` and `dist/afloat-1.0.1.zip.sha256`. The [README](README.md#install-in-chrome-or-microsoft-edge) links to the ZIP and explains extraction and **Developer mode → Load unpacked** in either browser. Users do not need a store account or build tools, and updates are manual.
+Chrome Web Store publication is deferred for now. The [README](README.md#install-in-chrome-or-microsoft-edge) links to GitHub's source ZIP and explains extraction and **Developer mode → Load unpacked** using the repository's `extension` folder. This requires no account, store payment, or build tools, and updates are manual.
 
-The [Build and package workflow](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) automatically validates the source, runs the Chrome and Edge regressions, and builds the ZIP on pushes to `main` and pull requests. A separate job commits only the generated versioned ZIP and checksum after a successful build on `main`. Pull requests cannot publish packages. A newer commit on `main` prevents an older build from publishing over it, and unchanged inputs do not create repeated package commits.
+The [Build and package workflow](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) automatically validates the source, runs the Chrome and Edge regressions, and uploads the ZIP and checksum as an artifact on successful pushes to `main` and pull requests. Open a successful run and download **Artifacts → afloat-package**. Extract the artifact to get `afloat-1.0.1.zip` and its checksum, then extract the extension ZIP for manual installation or upload that inner ZIP to a store. [GitHub requires sign-in for artifact downloads](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts). Artifacts are retained for 90 days; run the workflow again if a fresh artifact is needed after expiry.
 
-`dist/` ignores local build output; the workflow explicitly adds only the validated package and checksum for the manifest version. For a new release, update both version fields and the versioned download links, then push the source changes. No manual ZIP creation, staging, or ignore-file update is needed. Store images and test profiles do not belong in the ZIP.
+`dist/` is temporary build output, ignored by Git and excluded from the source repository. A local build recreates it; CI creates it on its runner. The workflow never commits packages back to Git. For a new release, update both version fields and push the source changes. No manual ZIP creation, staging, or ignore-file update is needed. Store images and test profiles do not belong in the ZIP.
 
 Microsoft's [Edge developer registration documentation](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/create-dev-account) confirms that the Edge extension program has **no registration fee**. Account verification and certification still apply if you choose to publish there.
 
@@ -54,9 +54,9 @@ Push source changes to `main` to run the full automated pipeline. For a local va
 npm run build
 ```
 
-The build command runs validation before packaging; CI also requires `npm test` and `npm run test:edge` to pass before publishing the package. The workflow installs its browser-test tooling automatically. Local browser tests require Playwright; see README for setup and executable overrides. Their temporary-profile flags are development tools, not part of the extension or instructions for users.
+The build command runs validation before packaging; CI also requires `npm test` and `npm run test:edge` to pass before uploading the artifact. The workflow installs its browser-test tooling automatically. Local browser tests require Playwright; see README for setup and executable overrides. Their temporary-profile flags are development tools, not part of the extension or instructions for users.
 
-ZIP entries use a fixed order and timestamp for repeatable output. The packager writes a temporary archive and replaces the previous ZIP only after successful creation. The workflow uses GitHub's built-in token and publishes through a separate job with repository-write permission; the test job has read-only repository access. Generated commits do not trigger another build.
+ZIP entries use a fixed order and timestamp for repeatable output. The packager writes a temporary archive and replaces the previous ZIP only after successful creation. The workflow has read-only repository access; it uploads artifacts without changing any Git branch.
 
 The packaging script includes the contents of `extension/` and the repository's `LICENSE` in the ZIP. Do not upload the repository, `.git`, test profiles, or store materials as the extension package.
 
@@ -102,8 +102,8 @@ This source has no `update_url` or hard-coded store extension ID. No application
 - [x] Privacy policy, descriptions, disclosures, and reviewer instructions.
 - [x] Small promotional tile.
 - [x] Public repository and verified live privacy URL.
-- [x] ZIP and checksum prepared for direct GitHub downloads with manual install instructions.
-- [x] Automatic build, browser checks, and package updates configured in GitHub Actions.
+- [x] Source ZIP download and workflow artifact install instructions prepared.
+- [x] Automatic build, browser checks, and ZIP/checksum artifact uploads configured in GitHub Actions.
 - [x] Genuine store screenshot, cropped and privacy-redacted locally.
 - [ ] Publisher review of identity, contact details, rights, policy, and certifications.
 - [ ] Publisher accounts, verification, upload, and final submission.

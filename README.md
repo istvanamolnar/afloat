@@ -6,16 +6,18 @@ Uses the EaseMe Solutions hex logo from [easeme.eu](https://www.easeme.eu/) as a
 
 ## Install in Chrome or Microsoft Edge
 
-1. [Download Afloat 1.0.1 ZIP](https://github.com/istvanamolnar/afloat/raw/refs/heads/main/dist/afloat-1.0.1.zip) and extract it to a folder you will keep, such as `Documents\Afloat`.
+1. [Download the source ZIP](https://github.com/istvanamolnar/afloat/archive/refs/heads/main.zip) and extract it to a folder you will keep, such as `Documents\Afloat`.
 2. Open `chrome://extensions` in Chrome or `edge://extensions` in Microsoft Edge and enable **Developer mode**.
-3. Click **Load unpacked** and select the extracted folder containing `manifest.json`.
+3. Click **Load unpacked** and select the `extension` folder inside the extracted repository (the folder containing `manifest.json`).
 4. Pin **Afloat** to your toolbar using the browser's Extensions menu.
 
-No store account, payment, build step, or Node.js installation is needed to use this download. The checked-in ZIP contains the extension files and license. Its [SHA-256 checksum](dist/afloat-1.0.1.zip.sha256) is included alongside it.
+No account, payment, build step, or Node.js installation is needed to use this source download. The browser loads `extension/` directly.
 
 Keep the extracted folder in place. Updates are manual: replace its files with a newer release, then click **Reload** on Afloat's card in the browser's extensions page. The ZIP is for extraction and loading in Developer mode, not a one-click store installer.
 
-If you cloned the source repository, you can select its `extension` folder directly instead of downloading the ZIP.
+If you cloned the source repository, select its `extension` folder directly instead of downloading the ZIP.
+
+For a ready-made extension ZIP and SHA-256 checksum, open a successful run under [Build and package](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) and download **Artifacts → afloat-package**. [GitHub requires sign-in to download workflow artifacts](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts). Extract the artifact, then extract the enclosed extension ZIP and load its folder containing `manifest.json`. Build artifacts are retained for 90 days; the source download above remains available without signing in.
 
 ## Use
 
@@ -51,7 +53,7 @@ There is no compilation step or runtime dependency. `extension/` is ready to loa
 npm run build
 ```
 
-[GitHub Actions](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) does this automatically for pushes to `main` and pull requests. It validates the source, runs the Chrome and Edge browser regression tests, and builds the package. After a successful build on `main`, it commits the generated ZIP and checksum back to the repository. Failed checks or tests leave the downloadable package unchanged. No manual zipping is needed.
+[GitHub Actions](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) does this automatically for pushes to `main` and pull requests. It validates the source, runs the Chrome and Edge browser regression tests, and uploads the ZIP and checksum as a workflow artifact only after success. The workflow has read-only repository access and never commits generated files. No manual zipping is needed.
 
 - `node scripts/check.mjs` checks the manifest, assets, and syntax.
 - `node scripts/browser-test.mjs` tests real Picture-in-Picture playback and security regressions in a separate Chrome profile.
@@ -59,6 +61,6 @@ npm run build
 - Browser tests need Playwright available locally (for example `npm install --no-save playwright@1.62.1`), or `PLAYWRIGHT_MODULE_PATH` set to an existing package directory. Set `BROWSER_EXECUTABLE` if installed elsewhere. The existing `CHROME_EXECUTABLE` override is also supported.
 - `npm run build` (or `node scripts/package.mjs`) validates and creates `dist/afloat-1.0.1.zip` and its SHA-256 checksum for GitHub downloads or either store (Windows). Packaged text files use LF line endings, and ZIP entry order and timestamps are fixed, so local and CI builds produce the same archive from unchanged inputs. Packaging failures preserve the previous ZIP.
 
-When releasing a new version, update both version fields and the versioned download links. The workflow generates and commits the new package automatically; `.gitignore` does not need to change.
+`dist/` is generated build output and is ignored by Git. A local build recreates it; CI creates it only on its runner. When releasing a new version, update both version fields and push the source. The workflow generates the new versioned package automatically.
 
 The browser test uses a locally generated video; no YouTube account or network access is required.
