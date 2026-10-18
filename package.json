@@ -1,0 +1,19 @@
+{
+  "name": "afloat-chrome-extension",
+  "version": "1.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Lightweight Chromium extension that keeps your current video in an always-on-top Picture-in-Picture window.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/istvanamolnar/afloat.git"
+  },
+  "scripts": {
+    "test": "node scripts/browser-test.mjs",
+    "test:edge": "node scripts/browser-test.mjs edge",
+    "check": "node scripts/check.mjs",
+    "package": "node scripts/package.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

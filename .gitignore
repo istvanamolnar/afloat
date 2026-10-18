@@ -1,0 +1,13 @@
+node_modules/
+dist/
+test-results/
+.test-profile/
+*.log
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+*.crx

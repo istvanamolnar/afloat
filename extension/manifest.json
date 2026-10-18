@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "Afloat — Floating Video",
+  "short_name": "Afloat",
+  "version": "1.0.1",
+  "description": "One click to keep your YouTube video in an always-on-top Picture-in-Picture window.",
+  "minimum_chrome_version": "102",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_title": "Afloat — Float this video",
+    "default_icon": "icon.png"
+  },
+  "icons": { "128": "icon.png" },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": { "default": "Alt+Shift+P", "mac": "Alt+Shift+P" }
+    }
+  },
+  "content_security_policy": { "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'" }
+}
