@@ -57,7 +57,7 @@ npm run build
 - `node scripts/browser-test.mjs` tests real Picture-in-Picture playback and security regressions in a separate Chrome profile.
 - `node scripts/browser-test.mjs edge` runs the same checks in a separate Microsoft Edge profile.
 - Browser tests need Playwright available locally (for example `npm install --no-save playwright@1.62.1`), or `PLAYWRIGHT_MODULE_PATH` set to an existing package directory. Set `BROWSER_EXECUTABLE` if installed elsewhere. The existing `CHROME_EXECUTABLE` override is also supported.
-- `npm run build` (or `node scripts/package.mjs`) validates and creates `dist/afloat-1.0.1.zip` and its SHA-256 checksum for GitHub downloads or either store (Windows). ZIP entry order and timestamps are fixed, so unchanged input files produce the same archive. Packaging failures preserve the previous ZIP.
+- `npm run build` (or `node scripts/package.mjs`) validates and creates `dist/afloat-1.0.1.zip` and its SHA-256 checksum for GitHub downloads or either store (Windows). Packaged text files use LF line endings, and ZIP entry order and timestamps are fixed, so local and CI builds produce the same archive from unchanged inputs. Packaging failures preserve the previous ZIP.
 
 When releasing a new version, update both version fields and the versioned download links. The workflow generates and commits the new package automatically; `.gitignore` does not need to change.
 
