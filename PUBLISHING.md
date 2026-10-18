@@ -8,7 +8,9 @@ The security fix, policy, listing text, permission explanations, icon, and promo
 
 Chrome Web Store publication is deferred for now. The repository includes `dist/afloat-1.0.1.zip` and `dist/afloat-1.0.1.zip.sha256`. The [README](README.md#install-in-chrome-or-microsoft-edge) links to the ZIP and explains extraction and **Developer mode → Load unpacked** in either browser. Users do not need a store account or build tools, and updates are manual.
 
-Only the verified 1.0.1 ZIP and checksum are allowed through `.gitignore`; older build output remains ignored. For future versions, regenerate and verify the package, update the download links and ignore entries, and commit both artifacts together. Store images and test profiles do not belong in the ZIP.
+The [Build and package workflow](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) automatically validates the source, runs the Chrome and Edge regressions, and builds the ZIP on pushes to `main` and pull requests. A separate job commits only the generated versioned ZIP and checksum after a successful build on `main`. Pull requests cannot publish packages. A newer commit on `main` prevents an older build from publishing over it, and unchanged inputs do not create repeated package commits.
+
+`dist/` ignores local build output; the workflow explicitly adds only the validated package and checksum for the manifest version. For a new release, update both version fields and the versioned download links, then push the source changes. No manual ZIP creation, staging, or ignore-file update is needed. Store images and test profiles do not belong in the ZIP.
 
 Microsoft's [Edge developer registration documentation](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/create-dev-account) confirms that the Edge extension program has **no registration fee**. Account verification and certification still apply if you choose to publish there.
 
@@ -46,14 +48,15 @@ Account verification details and contact emails are entered in the dashboards; n
 
 ## 2. Check and package
 
+Push source changes to `main` to run the full automated pipeline. For a local validation and package build:
+
 ```powershell
-node scripts/check.mjs
-node scripts/browser-test.mjs
-node scripts/browser-test.mjs edge
-node scripts/package.mjs
+npm run build
 ```
 
-Browser tests require Playwright; see README for setup and executable overrides. Their temporary-profile flags are development tools, not part of the extension or instructions for users.
+The build command runs validation before packaging; CI also requires `npm test` and `npm run test:edge` to pass before publishing the package. The workflow installs its browser-test tooling automatically. Local browser tests require Playwright; see README for setup and executable overrides. Their temporary-profile flags are development tools, not part of the extension or instructions for users.
+
+ZIP entries use a fixed order and timestamp for repeatable output. The packager writes a temporary archive and replaces the previous ZIP only after successful creation. The workflow uses GitHub's built-in token and publishes through a separate job with repository-write permission; the test job has read-only repository access. Generated commits do not trigger another build.
 
 The packaging script includes the contents of `extension/` and the repository's `LICENSE` in the ZIP. Do not upload the repository, `.git`, test profiles, or store materials as the extension package.
 
@@ -100,6 +103,7 @@ This source has no `update_url` or hard-coded store extension ID. No application
 - [x] Small promotional tile.
 - [x] Public repository and verified live privacy URL.
 - [x] ZIP and checksum prepared for direct GitHub downloads with manual install instructions.
+- [x] Automatic build, browser checks, and package updates configured in GitHub Actions.
 - [x] Genuine store screenshot, cropped and privacy-redacted locally.
 - [ ] Publisher review of identity, contact details, rights, policy, and certifications.
 - [ ] Publisher accounts, verification, upload, and final submission.

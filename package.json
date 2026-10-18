@@ -13,6 +13,7 @@
     "test": "node scripts/browser-test.mjs",
     "test:edge": "node scripts/browser-test.mjs edge",
     "check": "node scripts/check.mjs",
+    "build": "node scripts/package.mjs",
     "package": "node scripts/package.mjs"
   },
   "engines": { "node": ">=20" }

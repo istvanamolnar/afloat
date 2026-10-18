@@ -45,12 +45,20 @@ The source code and documentation are licensed under the [MIT license](LICENSE).
 
 ## Development
 
-No build step or runtime dependencies. `extension/` is ready to load.
+There is no compilation step or runtime dependency. `extension/` is ready to load. To validate and generate the ZIP and checksum locally, run:
+
+```sh
+npm run build
+```
+
+[GitHub Actions](https://github.com/istvanamolnar/afloat/actions/workflows/build.yml) does this automatically for pushes to `main` and pull requests. It validates the source, runs the Chrome and Edge browser regression tests, and builds the package. After a successful build on `main`, it commits the generated ZIP and checksum back to the repository. Failed checks or tests leave the downloadable package unchanged. No manual zipping is needed.
 
 - `node scripts/check.mjs` checks the manifest, assets, and syntax.
 - `node scripts/browser-test.mjs` tests real Picture-in-Picture playback and security regressions in a separate Chrome profile.
 - `node scripts/browser-test.mjs edge` runs the same checks in a separate Microsoft Edge profile.
 - Browser tests need Playwright available locally (for example `npm install --no-save playwright@1.62.1`), or `PLAYWRIGHT_MODULE_PATH` set to an existing package directory. Set `BROWSER_EXECUTABLE` if installed elsewhere. The existing `CHROME_EXECUTABLE` override is also supported.
-- `node scripts/package.mjs` creates `dist/afloat-1.0.1.zip` and its SHA-256 checksum for GitHub downloads or either store (Windows). When releasing a new version, update the download links and `.gitignore` entries, verify the package, and commit the ZIP and checksum together.
+- `npm run build` (or `node scripts/package.mjs`) validates and creates `dist/afloat-1.0.1.zip` and its SHA-256 checksum for GitHub downloads or either store (Windows). ZIP entry order and timestamps are fixed, so unchanged input files produce the same archive. Packaging failures preserve the previous ZIP.
+
+When releasing a new version, update both version fields and the versioned download links. The workflow generates and commits the new package automatically; `.gitignore` does not need to change.
 
 The browser test uses a locally generated video; no YouTube account or network access is required.
