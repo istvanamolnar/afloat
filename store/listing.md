@@ -83,6 +83,6 @@ Hardened Picture-in-Picture status handling against synthetic close events. Play
 
 - Extension/store icon: `extension/icon.png` (128 × 128). Reuse this single icon; no alternative icon sizes are required by this project.
 - Small promotional image: `store/assets/promo-440x280.png`.
-- Store screenshot: save a genuine manual capture as `store/assets/screenshot-1280x800.png`; it has not been captured yet.
+- Store screenshot: `store/assets/screenshot-1280x800.png` (1280 × 800), prepared locally from a genuine user capture with cropping and blurred personal details. Review before public distribution.
 
 See `store/README.md` for image provenance and upload details.
